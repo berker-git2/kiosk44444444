@@ -14,6 +14,7 @@ import TurDetay from "./pages/TurDetay";
 import Videolar from "./pages/Videolar";
 import YatKiralama from "./pages/YatKiralama";
 import YatDetay from "./pages/YatDetay";
+import UcakBileti from "./pages/UcakBileti";
 
 const queryClient = new QueryClient();
 
