@@ -2,6 +2,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { yachts } from "@/components/yat/data";
 import type { Yacht } from "@/components/yat/types";
+import YatBookingModal from "@/components/yat/YatBookingModal";
 import { Button } from "@/components/ui/button";
 import {
   Calendar as CalendarIcon,
@@ -1069,7 +1070,7 @@ export default function YatDetay() {
                 )}
                 {rentalType === "daily" && dayCount > 0 && (
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-500">Günl��k hesap</span>
+                    <span className="text-slate-500">Günlük hesap</span>
                     <span>
                       {yacht.price} × {dayCount} ={" "}
                       <b>{dayCount * yacht.price}</b> {yacht.currency || "€"}
