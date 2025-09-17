@@ -209,7 +209,7 @@
   .flight-hero {
     position: relative;
     overflow: hidden;
-    background-image: url('https://cdn.builder.io/api/v1/image/assets%2F4dd00ebd73da45a7b071d30b6263c5ff%2Fe0f29a9914a04094a0919c4ec1e07364?format=webp&width=1600');
+    background-image: url("https://cdn.builder.io/api/v1/image/assets%2F4dd00ebd73da45a7b071d30b6263c5ff%2Fe0f29a9914a04094a0919c4ec1e07364?format=webp&width=1600");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -221,15 +221,26 @@
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0.06) 40%, rgba(255,255,255,0.02) 100%);
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.28) 0%,
+      rgba(0, 0, 0, 0.06) 40%,
+      rgba(255, 255, 255, 0.02) 100%
+    );
     z-index: 10;
     pointer-events: none;
   }
 
   @keyframes bg-pan {
-    0% { background-position: 45% 50%; }
-    50% { background-position: 55% 50%; }
-    100% { background-position: 45% 50%; }
+    0% {
+      background-position: 45% 50%;
+    }
+    50% {
+      background-position: 55% 50%;
+    }
+    100% {
+      background-position: 45% 50%;
+    }
   }
 
   /* Subtle pan effect (disabled on prefers-reduced-motion) */
@@ -246,15 +257,20 @@
     font-weight: 700;
     letter-spacing: 0.02em;
     color: white;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.35);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
     transform: translateY(0);
     animation: logo-bob 6s ease-in-out infinite;
     z-index: 40;
   }
   @keyframes logo-bob {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-    100% { transform: translateY(0); }
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+    100% {
+      transform: translateY(0);
+    }
   }
-
 }

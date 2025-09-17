@@ -1034,11 +1034,18 @@ export default function YatDetay() {
                     <div className="mt-3 text-sm flex items-center justify-between">
                       <div>Transfer tutarı</div>
                       <div className="font-semibold">
-                        {(draftTransfer ? (transferOptions.find((o) => o.id === draftTransfer)?.price || 0) : 0)} {yacht.currency || "€"}
+                        {draftTransfer
+                          ? transferOptions.find((o) => o.id === draftTransfer)
+                              ?.price || 0
+                          : 0}{" "}
+                        {yacht.currency || "€"}
                       </div>
                     </div>
                     <div className="mt-3 flex justify-end gap-2">
-                      <Button variant="outline" onClick={() => setTransferOpen(false)}>
+                      <Button
+                        variant="outline"
+                        onClick={() => setTransferOpen(false)}
+                      >
                         İptal
                       </Button>
                       <Button
@@ -1132,14 +1139,44 @@ export default function YatDetay() {
         hourlyDate={hourlyDate}
         guests={guests}
         embarkName={embarkName}
-        addons={Object.entries(addons)
-          .map(([id, qty]) => {
-            const it = ADDON_CATEGORIES.flatMap((c) => c.items).find((i) => i.id === id);
-            return it && qty > 0 ? { id, name: it.name, qty, price: it.price } : null;
-          })
-          .filter(Boolean) as { id: string; name: string; qty: number; price: number }[]}
-        transfer={selectedTransfer ? (transferOptions.find((o) => o.id === selectedTransfer) ? { id: selectedTransfer, label: transferOptions.find((o) => o.id === selectedTransfer)!.label, price: transferOptions.find((o) => o.id === selectedTransfer)!.price } : null) : null}
-        totals={{ base: baseSubtotal, addons: addonsSubtotal, transfer: transferSubtotal, grand: grandTotal, prepay, payOnBoard }}
+        addons={
+          Object.entries(addons)
+            .map(([id, qty]) => {
+              const it = ADDON_CATEGORIES.flatMap((c) => c.items).find(
+                (i) => i.id === id,
+              );
+              return it && qty > 0
+                ? { id, name: it.name, qty, price: it.price }
+                : null;
+            })
+            .filter(Boolean) as {
+            id: string;
+            name: string;
+            qty: number;
+            price: number;
+          }[]
+        }
+        transfer={
+          selectedTransfer
+            ? transferOptions.find((o) => o.id === selectedTransfer)
+              ? {
+                  id: selectedTransfer,
+                  label: transferOptions.find((o) => o.id === selectedTransfer)!
+                    .label,
+                  price: transferOptions.find((o) => o.id === selectedTransfer)!
+                    .price,
+                }
+              : null
+            : null
+        }
+        totals={{
+          base: baseSubtotal,
+          addons: addonsSubtotal,
+          transfer: transferSubtotal,
+          grand: grandTotal,
+          prepay,
+          payOnBoard,
+        }}
       />
     </div>
   );
