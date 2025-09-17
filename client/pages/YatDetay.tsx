@@ -305,10 +305,7 @@ export default function YatDetay() {
       toast({ title: `Saatlik kiralamalarda minimum ${minHourly} saat` });
       return;
     }
-    toast({
-      title: "Ön rezervasyon oluşturuldu",
-      description: `${yacht.title} • ${rentalType === "daily" ? `${dayCount} gün` : `${hours} saat (${startHour})`} • ${guests} kişi • ${embarkName || "İskele seçilmedi"}`,
-    });
+    setBookingOpen(true);
   };
 
   const addOnQty = (id: string) => draftAddons[id] || 0;
