@@ -134,51 +134,76 @@ export default function UcakBileti() {
   return (
     <section className="relative min-h-[calc(100vh-0px)]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8 py-8">
-        <div className="rounded-2xl bg-white p-4 shadow-sm">
-          <div className="flex flex-col md:flex-row gap-3 items-center">
-            <div className="flex items-center gap-2">
-              <label className="text-sm mr-2">Gidiş</label>
-              <input
-                type="radio"
-                name="trip"
-                checked={tripType === "one"}
-                onChange={() => setTripType("one")}
-              />
-              <label className="text-sm mx-2">Tek Yön</label>
-              <input
-                type="radio"
-                name="trip"
-                checked={tripType === "round"}
-                onChange={() => setTripType("round")}
-              />
-              <label className="text-sm ml-2">Gidiş-Dönüş</label>
-            </div>
+        <div className="flight-hero rounded-2xl overflow-hidden shadow-xl p-6 relative">
+          <div className="cloud cloud--1" aria-hidden />
+          <div className="cloud cloud--2" aria-hidden />
+          <svg className="plane" viewBox="0 0 64 32" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            <g fill="none" stroke="#fff" strokeWidth="1.5">
+              <path d="M2 16 L58 4 L48 16 L58 28 Z" fill="#ffffff" opacity="0.95" />
+              <path d="M20 16 L34 16" stroke="#e6f2ff" strokeWidth="1" />
+            </g>
+          </svg>
 
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-3">
+          <div className="flex items-center justify-between mb-4">
+            <div className="logo-anim">
+              <div className="h-11 w-11 rounded-full bg-white/20 grid place-items-center text-white font-bold">✈️</div>
               <div>
-                <label className="block text-xs text-slate-500">Nereden</label>
-                <Input value={from} onChange={(e) => setFrom(e.target.value)} />
-              </div>
-              <div>
-                <label className="block text-xs text-slate-500">Nereye</label>
-                <Input value={to} onChange={(e) => setTo(e.target.value)} />
-              </div>
-              <div>
-                <label className="block text-xs text-slate-500">Gidiş Tarihi</label>
-                <Input type="date" value={departDate} onChange={(e) => setDepartDate(e.target.value)} />
-              </div>
-              <div>
-                <label className="block text-xs text-slate-500">Dönüş Tarihi</label>
-                <Input type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} disabled={tripType === "one"} />
-              </div>
-              <div>
-                <label className="block text-xs text-slate-500">Yolcular</label>
-                <Input type="number" min={1} value={passengers} onChange={(e) => setPassengers(Math.max(1, Number(e.target.value)))} />
+                <div className="text-white text-lg font-extrabold">On Flight</div>
+                <div className="text-white/90 text-xs">En iyi uçuş seçenekleri</div>
               </div>
             </div>
+            <div className="hidden sm:flex items-center gap-4">
+              <button className="text-white/90 text-sm underline">Giriş Yap</button>
+              <button className="bg-white/20 text-white px-3 py-2 rounded">Profil</button>
+            </div>
+          </div>
 
-            <div className="flex items-center">
-              <Button onClick={onSearch} className="bg-brand text-white ml-2">Uçuş Ara</Button>
+          <div className="rounded-xl bg-white/90 dark:bg-white/5 p-4 -mt-2">
+            <div className="flex flex-col md:flex-row gap-3 items-center">
+              <div className="flex items-center gap-2">
+                <label className="text-sm mr-2">Gidiş</label>
+                <input
+                  type="radio"
+                  name="trip"
+                  checked={tripType === "one"}
+                  onChange={() => setTripType("one")}
+                />
+                <label className="text-sm mx-2">Tek Yön</label>
+                <input
+                  type="radio"
+                  name="trip"
+                  checked={tripType === "round"}
+                  onChange={() => setTripType("round")}
+                />
+                <label className="text-sm ml-2">Gidiş-Dönüş</label>
+              </div>
+
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-3">
+                <div>
+                  <label className="block text-xs text-slate-500">Nereden</label>
+                  <Input value={from} onChange={(e) => setFrom(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-500">Nereye</label>
+                  <Input value={to} onChange={(e) => setTo(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-500">Gidiş Tarihi</label>
+                  <Input type="date" value={departDate} onChange={(e) => setDepartDate(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-500">Dönüş Tarihi</label>
+                  <Input type="date" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} disabled={tripType === "one"} />
+                </div>
+                <div>
+                  <label className="block text-xs text-slate-500">Yolcular</label>
+                  <Input type="number" min={1} value={passengers} onChange={(e) => setPassengers(Math.max(1, Number(e.target.value)))} />
+                </div>
+              </div>
+
+              <div className="flex items-center">
+                <Button onClick={onSearch} className="bg-brand text-white ml-2 px-6 py-3">Uçuş Ara</Button>
+              </div>
             </div>
           </div>
         </div>
