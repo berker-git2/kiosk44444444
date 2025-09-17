@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello world project</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+
+    <script>
+      (function () {
+        try {
+          const originalFetch = window.fetch;
+          if (originalFetch) {
+            window.fetch = async function (...args) {
+              try {
+                return await originalFetch.apply(this, args);
+              } catch (err) {
+                if (err && err.name === "TypeError") {
+                  // Avoid breaking Vite HMR when a third-party script (e.g. FullStory) interferes with fetch
+                  // Return an empty response so callers don't throw unhandled exceptions
+                  // This preserves dev fast-refresh while surfacing a console warning for debugging
+                  // NOTE: In production you should remove or scope third-party scripts properly.
+                  // eslint-disable-next-line no-console
+                  console.warn("[resilientFetch] fetch failed; returning empty Response:", err);
+                  return new Response(null, { status: 499, statusText: "Client Fetch Error" });
+                }
+                throw err;
+              }
+            };
+          }
+        } catch (e) {
+          // ignore
+        }
+      })();
+    </script>
+
+    <script type="module" src="/client/main.tsx"></script>
+  </body>
+</html>
