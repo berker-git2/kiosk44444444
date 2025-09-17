@@ -46,7 +46,7 @@ export default function YatBookingModal({
   totals: { base: number; addons: number; transfer: number; grand: number; prepay: number; payOnBoard: number };
 }) {
   const [mode, setMode] = useState<"pre" | "pay" | null>(null);
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
