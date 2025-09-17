@@ -135,15 +135,6 @@ export default function UcakBileti() {
     <section className="relative min-h-[calc(100vh-0px)]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8 py-8">
         <div className="flight-hero rounded-2xl overflow-hidden shadow-xl p-6 relative">
-          <div className="cloud cloud--1" aria-hidden />
-          <div className="cloud cloud--2" aria-hidden />
-          <svg className="plane" viewBox="0 0 64 32" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-            <g fill="none" stroke="#fff" strokeWidth="1.5">
-              <path d="M2 16 L58 4 L48 16 L58 28 Z" fill="#ffffff" opacity="0.95" />
-              <path d="M20 16 L34 16" stroke="#e6f2ff" strokeWidth="1" />
-            </g>
-          </svg>
-
           <div className="flex items-center justify-between mb-4">
             <div className="logo-anim">
               <div className="h-11 w-11 rounded-full bg-white/20 grid place-items-center text-white font-bold">✈️</div>
