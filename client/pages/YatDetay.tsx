@@ -2,6 +2,7 @@ import { useMemo, useState, type ReactNode } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { yachts } from "@/components/yat/data";
 import type { Yacht } from "@/components/yat/types";
+import YatBookingModal from "@/components/yat/YatBookingModal";
 import { Button } from "@/components/ui/button";
 import {
   Calendar as CalendarIcon,
@@ -304,10 +305,7 @@ export default function YatDetay() {
       toast({ title: `Saatlik kiralamalarda minimum ${minHourly} saat` });
       return;
     }
-    toast({
-      title: "Ön rezervasyon oluşturuldu",
-      description: `${yacht.title} • ${rentalType === "daily" ? `${dayCount} gün` : `${hours} saat (${startHour})`} • ${guests} kişi • ${embarkName || "İskele seçilmedi"}`,
-    });
+    setBookingOpen(true);
   };
 
   const addOnQty = (id: string) => draftAddons[id] || 0;
@@ -1013,7 +1011,7 @@ export default function YatDetay() {
                         {transferOptions.map((t) => (
                           <label
                             key={t.id}
-                            className={`flex items-center justify-between rounded-md border px-3 py-2 ${selectedTransfer === t.id ? "ring-2 ring-brand" : ""}`}
+                            className={`flex items-center justify-between rounded-md border px-3 py-2 ${draftTransfer === t.id ? "ring-2 ring-brand" : ""}`}
                           >
                             <span className="flex items-center gap-2">
                               <Car className="h-4 w-4 text-brand" /> {t.label}
@@ -1025,8 +1023,8 @@ export default function YatDetay() {
                               type="radio"
                               name="transfer"
                               value={t.id}
-                              checked={selectedTransfer === t.id}
-                              onChange={() => setSelectedTransfer(t.id)}
+                              checked={draftTransfer === t.id}
+                              onChange={() => setDraftTransfer(t.id)}
                               className="sr-only"
                             />
                           </label>
@@ -1036,8 +1034,28 @@ export default function YatDetay() {
                     <div className="mt-3 text-sm flex items-center justify-between">
                       <div>Transfer tutarı</div>
                       <div className="font-semibold">
-                        {transferSubtotal} {yacht.currency || "€"}
+                        {draftTransfer
+                          ? transferOptions.find((o) => o.id === draftTransfer)
+                              ?.price || 0
+                          : 0}{" "}
+                        {yacht.currency || "€"}
                       </div>
+                    </div>
+                    <div className="mt-3 flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        onClick={() => setTransferOpen(false)}
+                      >
+                        İptal
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setSelectedTransfer(draftTransfer);
+                          setTransferOpen(false);
+                        }}
+                      >
+                        Onayla
+                      </Button>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -1107,6 +1125,59 @@ export default function YatDetay() {
           </div>
         </div>
       </div>
+
+      <YatBookingModal
+        open={bookingOpen}
+        onOpenChange={setBookingOpen}
+        yacht={yacht}
+        rentalType={rentalType}
+        dayCount={dayCount}
+        hours={hours}
+        startHour={startHour}
+        dateFrom={date?.from}
+        dateTo={date?.to}
+        hourlyDate={hourlyDate}
+        guests={guests}
+        embarkName={embarkName}
+        addons={
+          Object.entries(addons)
+            .map(([id, qty]) => {
+              const it = ADDON_CATEGORIES.flatMap((c) => c.items).find(
+                (i) => i.id === id,
+              );
+              return it && qty > 0
+                ? { id, name: it.name, qty, price: it.price }
+                : null;
+            })
+            .filter(Boolean) as {
+            id: string;
+            name: string;
+            qty: number;
+            price: number;
+          }[]
+        }
+        transfer={
+          selectedTransfer
+            ? transferOptions.find((o) => o.id === selectedTransfer)
+              ? {
+                  id: selectedTransfer,
+                  label: transferOptions.find((o) => o.id === selectedTransfer)!
+                    .label,
+                  price: transferOptions.find((o) => o.id === selectedTransfer)!
+                    .price,
+                }
+              : null
+            : null
+        }
+        totals={{
+          base: baseSubtotal,
+          addons: addonsSubtotal,
+          transfer: transferSubtotal,
+          grand: grandTotal,
+          prepay,
+          payOnBoard,
+        }}
+      />
     </div>
   );
 }

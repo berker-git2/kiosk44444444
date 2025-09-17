@@ -14,6 +14,7 @@ import TurDetay from "./pages/TurDetay";
 import Videolar from "./pages/Videolar";
 import YatKiralama from "./pages/YatKiralama";
 import YatDetay from "./pages/YatDetay";
+import UcakBileti from "./pages/UcakBileti";
 
 const queryClient = new QueryClient();
 
@@ -33,7 +34,7 @@ export default function App() {
               <Route path="/videolar" element={<Videolar />} />
               <Route path="/yat-kiralama" element={<YatKiralama />} />
               <Route path="/yat-kiralama/:id" element={<YatDetay />} />
-              <Route path="/ucak-bileti" element={<Placeholder />} />
+              <Route path="/ucak-bileti" element={<UcakBileti />} />
               <Route path="/otobus-bileti" element={<Placeholder />} />
               <Route path="/destek" element={<Placeholder />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
