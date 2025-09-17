@@ -1013,7 +1013,7 @@ export default function YatDetay() {
                         {transferOptions.map((t) => (
                           <label
                             key={t.id}
-                            className={`flex items-center justify-between rounded-md border px-3 py-2 ${selectedTransfer === t.id ? "ring-2 ring-brand" : ""}`}
+                            className={`flex items-center justify-between rounded-md border px-3 py-2 ${draftTransfer === t.id ? "ring-2 ring-brand" : ""}`}
                           >
                             <span className="flex items-center gap-2">
                               <Car className="h-4 w-4 text-brand" /> {t.label}
@@ -1025,8 +1025,8 @@ export default function YatDetay() {
                               type="radio"
                               name="transfer"
                               value={t.id}
-                              checked={selectedTransfer === t.id}
-                              onChange={() => setSelectedTransfer(t.id)}
+                              checked={draftTransfer === t.id}
+                              onChange={() => setDraftTransfer(t.id)}
                               className="sr-only"
                             />
                           </label>
@@ -1036,8 +1036,21 @@ export default function YatDetay() {
                     <div className="mt-3 text-sm flex items-center justify-between">
                       <div>Transfer tutarı</div>
                       <div className="font-semibold">
-                        {transferSubtotal} {yacht.currency || "€"}
+                        {(draftTransfer ? (transferOptions.find((o) => o.id === draftTransfer)?.price || 0) : 0)} {yacht.currency || "€"}
                       </div>
+                    </div>
+                    <div className="mt-3 flex justify-end gap-2">
+                      <Button variant="outline" onClick={() => setTransferOpen(false)}>
+                        İptal
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setSelectedTransfer(draftTransfer);
+                          setTransferOpen(false);
+                        }}
+                      >
+                        Onayla
+                      </Button>
                     </div>
                   </DialogContent>
                 </Dialog>
@@ -1056,7 +1069,7 @@ export default function YatDetay() {
                 )}
                 {rentalType === "daily" && dayCount > 0 && (
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-500">Günlük hesap</span>
+                    <span className="text-slate-500">Günl��k hesap</span>
                     <span>
                       {yacht.price} × {dayCount} ={" "}
                       <b>{dayCount * yacht.price}</b> {yacht.currency || "€"}
