@@ -27,22 +27,26 @@ export default function App() {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <AppLayout>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/turlar" element={<Turlar />} />
-              <Route path="/turlar/:id" element={<TurDetay />} />
-              <Route path="/transferler" element={<Placeholder />} />
-              <Route path="/videolar" element={<Videolar />} />
-              <Route path="/yat-kiralama" element={<YatKiralama />} />
-              <Route path="/yat-kiralama/:id" element={<YatDetay />} />
-              <Route path="/ucak-bileti" element={<UcakBileti />} />
-              <Route path="/otobus-bileti" element={<Placeholder />} />
-              <Route path="/destek" element={<Placeholder />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AppLayout>
+          <BookingProvider>
+            <AppLayout>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/turlar" element={<Turlar />} />
+                <Route path="/turlar/:id" element={<TurDetay />} />
+                <Route path="/transferler" element={<Placeholder />} />
+                <Route path="/videolar" element={<Videolar />} />
+                <Route path="/yat-kiralama" element={<YatKiralama />} />
+                <Route path="/yat-kiralama/:id" element={<YatDetay />} />
+                <Route path="/ucak-bileti" element={<UcakBileti />} />
+                <Route path="/ucak-bileti/yolcu-bilgileri" element={<UcakYolcuBilgileri />} />
+                <Route path="/ucak-bileti/odeme" element={<UcakOdeme />} />
+                <Route path="/otobus-bileti" element={<Placeholder />} />
+                <Route path="/destek" element={<Placeholder />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </AppLayout>
+          </BookingProvider>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
