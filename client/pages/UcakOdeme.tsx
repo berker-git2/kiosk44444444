@@ -1,4 +1,4 @@
-import { FormEvent, useMemo, useRef, useState } from "react";
+import { FormEvent, useMemo, useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import SummarySidebar from "@/components/flights/SummarySidebar";
@@ -72,7 +72,7 @@ export default function UcakOdeme() {
                           <div className="text-sm font-semibold">On Flight</div>
                           <div className="text-xs">VISA</div>
                         </div>
-                        <div className="text-xl font-mono tracking-widest" id="cc-preview-number">•••• •••• •��•• ••••</div>
+                        <div className="text-xl font-mono tracking-widest" id="cc-preview-number">•••• •••• •••• ••••</div>
                         <div className="flex justify-between items-end mt-6 text-sm">
                           <div>
                             <div className="text-xs text-slate-200">Kart Sahibi</div>
