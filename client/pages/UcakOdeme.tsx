@@ -12,10 +12,137 @@ export default function UcakOdeme() {
 
   const orderId = useMemo(() => `ORD-${Date.now()}`, []);
 
+  function luhnCheck(num: string) {
+    const arr = num.replace(/\s+/g, "").split("").reverse().map((d) => parseInt(d, 10));
+    let sum = 0;
+    for (let i = 0; i < arr.length; i++) {
+      let val = arr[i];
+      if (i % 2 === 1) {
+        val *= 2;
+        if (val > 9) val -= 9;
+      }
+      sum += val;
+    }
+    return sum % 10 === 0;
+  }
+
+  useEffect(() => {
+    // dynamically load jQuery and attach simple UI handlers for animations and formatting
+    const script = document.createElement("script");
+    script.src = "https://code.jquery.com/jquery-3.6.0.min.js";
+    script.async = true;
+    script.onload = () => {
+      const $ = (window as any).jQuery;
+      if (!$) return;
+
+      function formatCardNumber(v: string) {
+        return v.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim();
+      }
+
+      function isExpiryValid(v: string) {
+        const m = v.split(/\D+/).filter(Boolean)[0];
+        const yy = v.split("/")[1];
+        if (!m || !yy) return false;
+        const mm = parseInt(v.split("/")[0], 10);
+        const year = parseInt("20" + v.split("/")[1], 10);
+        if (isNaN(mm) || isNaN(year)) return false;
+        if (mm < 1 || mm > 12) return false;
+        const now = new Date();
+        const expiry = new Date(year, mm - 1, 1);
+        return expiry >= new Date(now.getFullYear(), now.getMonth(), 1);
+      }
+
+      $(document).on("input", "#card-number", function (this: any) {
+        const raw = $(this).val() as string;
+        const formatted = formatCardNumber(raw);
+        $(this).val(formatted);
+        $("#cc-preview-number").text(formatted || "•••• •••• •••• ••••");
+        $("#card-number-error").hide();
+      });
+
+      $(document).on("blur", "#card-number", function (this: any) {
+        const raw = ($(this).val() as string).replace(/\s+/g, "");
+        if (raw.length < 13 || !luhnCheck(raw)) $("#card-number-error").show();
+        else $("#card-number-error").hide();
+      });
+
+      $(document).on("input", "#card-name", function (this: any) {
+        $("#cc-preview-name").text(((this.value as string) || "AD SOYAD").toUpperCase());
+      });
+
+      $(document).on("input", "#card-expiry", function (this: any) {
+        $("#cc-preview-expiry").text((this.value as string) || "--/--");
+      });
+
+      $(document).on("focus", "#card-cvc", function () {
+        $("#card-front").hide();
+        $("#card-back").removeClass("hidden");
+        $("#cc-preview-cvc").text(($("#card-cvc").val() as string) || "•••");
+      });
+      $(document).on("blur", "#card-cvc", function () {
+        $("#card-back").addClass("hidden");
+        $("#card-front").show();
+      });
+      $(document).on("input", "#card-cvc", function (this: any) {
+        $("#cc-preview-cvc").text((this.value as string) || "•••");
+      });
+    };
+    document.body.appendChild(script);
+    return () => {
+      try {
+        document.body.removeChild(script);
+      } catch {}
+    };
+  }, []);
+
   async function onPay(e: FormEvent) {
     e.preventDefault();
     setError(null);
-    // Attempt Vakıf 3D init. If credentials are missing, show a message.
+
+    // basic client-side validation (name, card number Luhn, expiry, cvc)
+    const nameEl = document.getElementById("card-name") as HTMLInputElement | null;
+    const numEl = document.getElementById("card-number") as HTMLInputElement | null;
+    const expEl = document.getElementById("card-expiry") as HTMLInputElement | null;
+    const cvcEl = document.getElementById("card-cvc") as HTMLInputElement | null;
+
+    const name = nameEl?.value || "";
+    const numRaw = (numEl?.value || "").replace(/\s+/g, "");
+    const exp = expEl?.value || "";
+    const cvc = cvcEl?.value || "";
+
+    if (!name) {
+      setError("Kart üzerindeki isim gereklidir");
+      return;
+    }
+    if (!numRaw || numRaw.length < 13 || !luhnCheck(numRaw)) {
+      setError("Geçersiz kart numarası");
+      return;
+    }
+    // expiry simple check MM/YY
+    const expParts = exp.split("/");
+    if (expParts.length !== 2) {
+      setError("Son kullanma tarihi geçersiz");
+      return;
+    }
+    const mm = parseInt(expParts[0], 10);
+    const yy = parseInt(expParts[1], 10);
+    if (isNaN(mm) || isNaN(yy) || mm < 1 || mm > 12) {
+      setError("Son kullanma tarihi geçersiz");
+      return;
+    }
+    const year = 2000 + yy;
+    const now = new Date();
+    const expiry = new Date(year, mm - 1, 1);
+    if (expiry < new Date(now.getFullYear(), now.getMonth(), 1)) {
+      setError("Kartın son kullanma tarihi geçmiş");
+      return;
+    }
+    if (!/^[0-9]{3,4}$/.test(cvc)) {
+      setError("CVC geçersiz");
+      return;
+    }
+
+    // Proceed with Vakif init
     try {
       const payload: VakifInitRequest = {
         amount: totalAmount,
