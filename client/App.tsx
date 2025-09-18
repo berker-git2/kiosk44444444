@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import AppLayout from "./components/layout/AppLayout";
+import { BookingProvider } from "@/components/flights/BookingContext";
 import Placeholder from "./pages/Placeholder";
 import Turlar from "./pages/Turlar";
 import TurDetay from "./pages/TurDetay";
