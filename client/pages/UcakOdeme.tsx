@@ -57,6 +57,50 @@ export default function UcakOdeme() {
                 nameInput: "#card-name",
               },
             });
+
+            // After Card.js renders the preview, load a small jQuery tilt plugin to add 3D/tilt effects
+            const tiltScript = document.createElement("script");
+            tiltScript.src = "https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js";
+            tiltScript.async = true;
+            tiltScript.onload = () => {
+              try {
+                const $ = (window as any).jQuery || (window as any).$;
+                if ($ && typeof $.fn?.tilt === "function") {
+                  $(".card-wrapper").tilt({
+                    maxTilt: 12,
+                    perspective: 1000,
+                    scale: 1.03,
+                    speed: 300,
+                    glare: true,
+                    maxGlare: 0.35,
+                  });
+                }
+              } catch (e) {
+                // ignore tilt init errors
+              }
+            };
+            document.body.appendChild(tiltScript);
+
+            // Basic immediate visual validation: mark wrapper valid/invalid while typing card number
+            const numInput = document.getElementById("card-number") as HTMLInputElement | null;
+            const wrapper = document.querySelector(".card-wrapper") as HTMLElement | null;
+            if (numInput && wrapper) {
+              const handler = () => {
+                const val = (numInput.value || "").replace(/\s+/g, "");
+                if (val.length >= 13 && luhnCheck(val)) {
+                  wrapper.classList.add("card-valid");
+                  wrapper.classList.remove("card-invalid");
+                } else if (val.length >= 4) {
+                  wrapper.classList.remove("card-valid");
+                  wrapper.classList.add("card-invalid");
+                } else {
+                  wrapper.classList.remove("card-valid", "card-invalid");
+                }
+              };
+              numInput.addEventListener("input", handler);
+              // run once to set initial state
+              setTimeout(handler, 300);
+            }
           }
         } catch (e) {
           // ignore init errors
