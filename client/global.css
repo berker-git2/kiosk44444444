@@ -209,7 +209,9 @@
   .flight-hero {
     position: relative;
     overflow: hidden;
-    background-image: url("https://cdn.builder.io/api/v1/image/assets%2F4dd00ebd73da45a7b071d30b6263c5ff%2Fe0f29a9914a04094a0919c4ec1e07364?format=webp&width=1600");
+    min-height: 100vh;
+    width: 100%;
+    background-image: url("https://cdn.builder.io/api/v1/image/assets%2F4dd00ebd73da45a7b071d30b6263c5ff%2F13eb655af8b644eeb522b8847f918334?format=webp&width=1600");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -223,9 +225,9 @@
     inset: 0;
     background: linear-gradient(
       180deg,
-      rgba(0, 0, 0, 0.28) 0%,
-      rgba(0, 0, 0, 0.06) 40%,
-      rgba(255, 255, 255, 0.02) 100%
+      rgba(0, 0, 0, 0.55) 0%,
+      rgba(0, 0, 0, 0.45) 40%,
+      rgba(0, 0, 0, 0.3) 100%
     );
     z-index: 10;
     pointer-events: none;
