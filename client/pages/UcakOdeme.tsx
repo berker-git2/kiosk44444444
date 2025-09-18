@@ -27,116 +27,48 @@ export default function UcakOdeme() {
   }
 
   useEffect(() => {
-    // dynamically load jQuery and attach simple UI handlers for animations and formatting
-    const script = document.createElement("script");
-    script.src = "https://code.jquery.com/jquery-3.6.0.min.js";
-    script.async = true;
-    let tiltScript: HTMLScriptElement | null = null;
-    script.onload = () => {
-      const $ = (window as any).jQuery;
-      if (!$) return;
+    // Load jQuery then Card.js plugin (https://github.com/jessepollak/card)
+    const jq = document.createElement("script");
+    jq.src = "https://code.jquery.com/jquery-3.6.0.min.js";
+    jq.async = true;
 
-      function formatCardNumber(v: string) {
-        return v.replace(/\D/g, "").replace(/(.{4})/g, "$1 ").trim();
-      }
+    jq.onload = () => {
+      // load Card.js CSS
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/card@2.5.0/dist/card.css";
+      document.head.appendChild(link);
 
-      function isExpiryValid(v: string) {
-        const parts = v.split("/").map((p) => p.trim());
-        if (parts.length !== 2) return false;
-        const mm = parseInt(parts[0], 10);
-        const yy = parseInt(parts[1], 10);
-        if (isNaN(mm) || isNaN(yy)) return false;
-        if (mm < 1 || mm > 12) return false;
-        const year = 2000 + yy;
-        const now = new Date();
-        const expiry = new Date(year, mm - 1, 1);
-        return expiry >= new Date(now.getFullYear(), now.getMonth(), 1);
-      }
-
-      // typing and formatting
-      $(document).on("input", "#card-number", function (this: any) {
-        const raw = $(this).val() as string;
-        const formatted = formatCardNumber(raw);
-        $(this).val(formatted);
-        $("#cc-preview-number").text(formatted || "•••• •••• •••• ••••");
-        $("#card-number-error").hide();
-
-        // visual state
-        const rawDigits = (formatted || "").replace(/\s+/g, "");
-        if (rawDigits.length >= 13 && luhnCheck(rawDigits)) {
-          $("#card-inner").removeClass("card-invalid").addClass("card-valid pulse");
-          setTimeout(() => $("#card-inner").removeClass("pulse"), 900);
-        } else if (rawDigits.length > 0) {
-          $("#card-inner").removeClass("card-valid").addClass("card-invalid");
-        } else {
-          $("#card-inner").removeClass("card-valid card-invalid");
-        }
-      });
-
-      $(document).on("blur", "#card-number", function (this: any) {
-        const raw = ($(this).val() as string).replace(/\s+/g, "");
-        if (raw.length < 13 || !luhnCheck(raw)) $("#card-number-error").show();
-        else $("#card-number-error").hide();
-      });
-
-      $(document).on("input", "#card-name", function (this: any) {
-        $("#cc-preview-name").text(((this.value as string) || "AD SOYAD").toUpperCase());
-      });
-
-      $(document).on("input", "#card-expiry", function (this: any) {
-        $("#cc-preview-expiry").text((this.value as string) || "--/--");
-        // small validity pulse
-        if (isExpiryValid(this.value as string)) {
-          $("#card-inner").addClass("pulse");
-          setTimeout(() => $("#card-inner").removeClass("pulse"), 700);
-        }
-      });
-
-      $(document).on("focus", "#card-cvc", function () {
-        $("#card-front").hide();
-        $("#card-back").removeClass("hidden");
-        $("#cc-preview-cvc").text(($("#card-cvc").val() as string) || "•••");
-        $("#card-inner").addClass("tilt");
-      });
-      $(document).on("blur", "#card-cvc", function () {
-        $("#card-back").addClass("hidden");
-        $("#card-front").show();
-        $("#card-inner").removeClass("tilt");
-      });
-      $(document).on("input", "#card-cvc", function (this: any) {
-        $("#cc-preview-cvc").text((this.value as string) || "•••");
-      });
-
-      // Load tilt.js (jQuery plugin) for nicer 3D effect
-      tiltScript = document.createElement("script");
-      tiltScript.src = "https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js";
-      tiltScript.async = true;
-      tiltScript.onload = () => {
+      // load Card.js script
+      const c = document.createElement("script");
+      c.src = "https://unpkg.com/card@2.5.0/dist/card.min.js";
+      c.async = true;
+      c.onload = () => {
         try {
-          // initialize with glare and max tilt
-          ($ as any)("#card-preview").tilt({
-            maxTilt: 15,
-            perspective: 1000,
-            glare: true,
-            maxGlare: 0.35,
-            scale: 1.02,
-            speed: 400,
-            easing: "cubic-bezier(.03,.98,.52,.99)",
-          });
+          const Card = (window as any).Card;
+          if (Card) {
+            new Card({
+              form: "#card-form",
+              container: ".card-wrapper",
+              formSelectors: {
+                numberInput: "#card-number",
+                expiryInput: "#card-expiry",
+                cvcInput: "#card-cvc",
+                nameInput: "#card-name",
+              },
+            });
+          }
         } catch (e) {
-          // ignore
+          // ignore init errors
         }
       };
-      document.body.appendChild(tiltScript);
+      document.body.appendChild(c);
     };
-    document.body.appendChild(script);
+
+    document.body.appendChild(jq);
+
     return () => {
-      try {
-        document.body.removeChild(script);
-      } catch {}
-      try {
-        if (tiltScript) document.body.removeChild(tiltScript);
-      } catch {}
+      // cleanup optional
     };
   }, []);
 
@@ -236,35 +168,7 @@ export default function UcakOdeme() {
               <div className="grid lg:grid-cols-[1fr_320px] gap-4">
                 {/* Left: animated card preview + form */}
                 <div>
-                  <div id="card-preview" className="relative w-full max-w-md mx-auto mb-4 perspective-1000">
-                    <div id="card-inner" className="relative w-full h-44 rounded-xl text-white bg-gradient-to-r from-brand to-indigo-600 p-4 transform transition-transform duration-500 will-change-transform">
-                      {/* Front */}
-                      <div id="card-front" className="absolute inset-0">
-                        <div className="flex justify-between items-center mb-6">
-                          <div className="text-sm font-semibold">On Flight</div>
-                          <div className="text-xs">VISA</div>
-                        </div>
-                        <div className="text-xl font-mono tracking-widest" id="cc-preview-number">•••• •••• •••• ••••</div>
-                        <div className="flex justify-between items-end mt-6 text-sm">
-                          <div>
-                            <div className="text-xs text-slate-200">Kart Sahibi</div>
-                            <div id="cc-preview-name" className="font-medium">AD SOYAD</div>
-                          </div>
-                          <div>
-                            <div className="text-xs text-slate-200">AA/YY</div>
-                            <div id="cc-preview-expiry" className="font-medium">--/--</div>
-                          </div>
-                        </div>
-                      </div>
-                      {/* Back (CVC) - simplified, shown on focus */}
-                      <div id="card-back" className="absolute inset-0 hidden bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-4 text-black">
-                        <div className="bg-black/60 h-10 rounded mb-4" />
-                        <div className="flex justify-end">
-                          <div className="bg-white rounded px-3 py-1" id="cc-preview-cvc">•••</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <div className="card-wrapper mb-4" />
 
                   <form id="card-form" onSubmit={onPay} className="space-y-3">
                     <div>
