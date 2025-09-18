@@ -31,6 +31,7 @@ export default function UcakOdeme() {
     const script = document.createElement("script");
     script.src = "https://code.jquery.com/jquery-3.6.0.min.js";
     script.async = true;
+    let tiltScript: HTMLScriptElement | null = null;
     script.onload = () => {
       const $ = (window as any).jQuery;
       if (!$) return;
@@ -107,7 +108,7 @@ export default function UcakOdeme() {
       });
 
       // Load tilt.js (jQuery plugin) for nicer 3D effect
-      const tiltScript = document.createElement("script");
+      tiltScript = document.createElement("script");
       tiltScript.src = "https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js";
       tiltScript.async = true;
       tiltScript.onload = () => {
@@ -132,6 +133,9 @@ export default function UcakOdeme() {
     return () => {
       try {
         document.body.removeChild(script);
+      } catch {}
+      try {
+        if (tiltScript) document.body.removeChild(tiltScript);
       } catch {}
     };
   }, []);
