@@ -10,7 +10,7 @@ export default function UcakOdeme() {
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const orderId = useMemo(() => `ORD-${Date.now()}`, []);
+  const orderId = `ORD-${Date.now()}`;
 
   function luhnCheck(num: string) {
     const arr = num.replace(/\s+/g, "").split("").reverse().map((d) => parseInt(d, 10));
