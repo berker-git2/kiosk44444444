@@ -229,7 +229,8 @@
       rgba(0, 0, 0, 0.45) 40%,
       rgba(0, 0, 0, 0.3) 100%
     );
-    z-index: 0;
+    /* place overlay above the photographic background but below interactive controls */
+    z-index: 5;
     pointer-events: none;
   }
 
