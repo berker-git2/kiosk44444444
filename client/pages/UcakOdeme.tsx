@@ -40,24 +40,36 @@ export default function UcakOdeme() {
       }
 
       function isExpiryValid(v: string) {
-        const m = v.split(/\D+/).filter(Boolean)[0];
-        const yy = v.split("/")[1];
-        if (!m || !yy) return false;
-        const mm = parseInt(v.split("/")[0], 10);
-        const year = parseInt("20" + v.split("/")[1], 10);
-        if (isNaN(mm) || isNaN(year)) return false;
+        const parts = v.split("/").map((p) => p.trim());
+        if (parts.length !== 2) return false;
+        const mm = parseInt(parts[0], 10);
+        const yy = parseInt(parts[1], 10);
+        if (isNaN(mm) || isNaN(yy)) return false;
         if (mm < 1 || mm > 12) return false;
+        const year = 2000 + yy;
         const now = new Date();
         const expiry = new Date(year, mm - 1, 1);
         return expiry >= new Date(now.getFullYear(), now.getMonth(), 1);
       }
 
+      // typing and formatting
       $(document).on("input", "#card-number", function (this: any) {
         const raw = $(this).val() as string;
         const formatted = formatCardNumber(raw);
         $(this).val(formatted);
         $("#cc-preview-number").text(formatted || "•••• •••• •••• ••••");
         $("#card-number-error").hide();
+
+        // visual state
+        const rawDigits = (formatted || "").replace(/\s+/g, "");
+        if (rawDigits.length >= 13 && luhnCheck(rawDigits)) {
+          $("#card-inner").removeClass("card-invalid").addClass("card-valid pulse");
+          setTimeout(() => $("#card-inner").removeClass("pulse"), 900);
+        } else if (rawDigits.length > 0) {
+          $("#card-inner").removeClass("card-valid").addClass("card-invalid");
+        } else {
+          $("#card-inner").removeClass("card-valid card-invalid");
+        }
       });
 
       $(document).on("blur", "#card-number", function (this: any) {
@@ -72,19 +84,39 @@ export default function UcakOdeme() {
 
       $(document).on("input", "#card-expiry", function (this: any) {
         $("#cc-preview-expiry").text((this.value as string) || "--/--");
+        // small validity pulse
+        if (isExpiryValid(this.value as string)) {
+          $("#card-inner").addClass("pulse");
+          setTimeout(() => $("#card-inner").removeClass("pulse"), 700);
+        }
       });
 
       $(document).on("focus", "#card-cvc", function () {
         $("#card-front").hide();
         $("#card-back").removeClass("hidden");
         $("#cc-preview-cvc").text(($("#card-cvc").val() as string) || "•••");
+        $("#card-inner").addClass("tilt");
       });
       $(document).on("blur", "#card-cvc", function () {
         $("#card-back").addClass("hidden");
         $("#card-front").show();
+        $("#card-inner").removeClass("tilt");
       });
       $(document).on("input", "#card-cvc", function (this: any) {
         $("#cc-preview-cvc").text((this.value as string) || "•••");
+      });
+
+      // tilt on mouse move inside preview
+      $(document).on("mousemove", "#card-preview", function (e: any) {
+        const rect = (this as HTMLElement).getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const rx = (-y / rect.height) * 10; // rotateX
+        const ry = (x / rect.width) * 12; // rotateY
+        $("#card-inner").css("transform", `rotateX(${rx}deg) rotateY(${ry}deg)`);
+      });
+      $(document).on("mouseleave", "#card-preview", function () {
+        $("#card-inner").css("transform", "rotateX(0deg) rotateY(0deg)");
       });
     };
     document.body.appendChild(script);
