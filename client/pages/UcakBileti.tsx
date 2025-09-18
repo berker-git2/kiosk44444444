@@ -156,7 +156,7 @@ export default function UcakBileti() {
             </div>
           </div>
 
-          <div className="rounded-xl bg-white/90 dark:bg-white/5 p-4 -mt-2">
+          <div className="rounded-xl bg-white/90 dark:bg-white/5 p-4 -mt-2 relative z-30">
             <div className="flex gap-2 mb-3">
               {([
                 { key: "one", label: "Tek Yön" },
