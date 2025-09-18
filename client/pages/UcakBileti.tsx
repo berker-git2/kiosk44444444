@@ -195,55 +195,59 @@ export default function UcakBileti() {
             </div>
           </div>
         </div>
+      </div>
 
-        {showResults && (
-          <div className="mt-6 grid md:grid-cols-[18rem_1fr] gap-6">
-            <FlightFilters value={filters} onChange={setFilters} />
+      {showResults && (
+        <div className="w-full bg-transparent -mt-4 z-20">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 md:px-8 py-6">
+            <div className="mt-6 grid md:grid-cols-[18rem_1fr] gap-6">
+              <FlightFilters value={filters} onChange={setFilters} />
 
-            <div className="space-y-6">
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <button className="p-2 rounded border" onClick={() => { if (!departDate) return; const d = new Date(departDate); d.setDate(d.getDate() - 1); setDepartDate(d.toISOString().slice(0, 10)); }}>
-                    <ChevronLeft />
-                  </button>
-                  <div className="text-sm font-semibold">{departDate}</div>
-                  <button className="p-2 rounded border" onClick={() => { if (!departDate) return; const d = new Date(departDate); d.setDate(d.getDate() + 1); setDepartDate(d.toISOString().slice(0, 10)); }}>
-                    <ChevronRight />
-                  </button>
-                  <div className="ml-4 text-xs text-slate-500">Günlük tahmini fiyatlar</div>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <button className="p-2 rounded border" onClick={() => { if (!departDate) return; const d = new Date(departDate); d.setDate(d.getDate() - 1); setDepartDate(d.toISOString().slice(0, 10)); }}>
+                      <ChevronLeft />
+                    </button>
+                    <div className="text-sm font-semibold">{departDate}</div>
+                    <button className="p-2 rounded border" onClick={() => { if (!departDate) return; const d = new Date(departDate); d.setDate(d.getDate() + 1); setDepartDate(d.toISOString().slice(0, 10)); }}>
+                      <ChevronRight />
+                    </button>
+                    <div className="ml-4 text-xs text-slate-500">Günlük tahmini fiyatlar</div>
+                  </div>
                 </div>
+
+                {tripType === "round" ? (
+                  <div className="grid lg:grid-cols-2 gap-6">
+                    <div>
+                      <div className="font-semibold mb-2">Gidiş</div>
+                      <div className="grid gap-3">
+                        {filteredOutbound.map((o) => (
+                          <FlightCard key={`${o.flightId}-${o.seller}-${o.price}`} offer={o} onSelect={(sel) => onSelectOffer(sel, "out")} />
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <div className="font-semibold mb-2">Dönüş</div>
+                      <div className="grid gap-3">
+                        {filteredInbound.map((o) => (
+                          <FlightCard key={`${o.flightId}-${o.seller}-${o.price}`} offer={o} onSelect={(sel) => onSelectOffer(sel, "in")} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid gap-3">
+                    {filteredOutbound.map((o) => (
+                      <FlightCard key={`${o.flightId}-${o.seller}-${o.price}`} offer={o} onSelect={(sel) => onSelectOffer(sel, "out")} />
+                    ))}
+                  </div>
+                )}
               </div>
-
-              {tripType === "round" ? (
-                <div className="grid lg:grid-cols-2 gap-6">
-                  <div>
-                    <div className="font-semibold mb-2">Gidiş</div>
-                    <div className="grid gap-3">
-                      {filteredOutbound.map((o) => (
-                        <FlightCard key={`${o.flightId}-${o.seller}-${o.price}`} offer={o} onSelect={(sel) => onSelectOffer(sel, "out")} />
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="font-semibold mb-2">Dönüş</div>
-                    <div className="grid gap-3">
-                      {filteredInbound.map((o) => (
-                        <FlightCard key={`${o.flightId}-${o.seller}-${o.price}`} offer={o} onSelect={(sel) => onSelectOffer(sel, "in")} />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid gap-3">
-                  {filteredOutbound.map((o) => (
-                    <FlightCard key={`${o.flightId}-${o.seller}-${o.price}`} offer={o} onSelect={(sel) => onSelectOffer(sel, "out")} />
-                  ))}
-                </div>
-              )}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <PackageModal
         open={packOpen}
