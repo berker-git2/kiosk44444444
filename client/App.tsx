@@ -18,6 +18,7 @@ import YatDetay from "./pages/YatDetay";
 import UcakBileti from "./pages/UcakBileti";
 import UcakYolcuBilgileri from "./pages/UcakYolcuBilgileri";
 import UcakOdeme from "./pages/UcakOdeme";
+import UcakRezervasyon from "./pages/UcakRezervasyon";
 
 const queryClient = new QueryClient();
 
