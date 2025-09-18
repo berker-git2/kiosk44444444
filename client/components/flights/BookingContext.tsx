@@ -1,4 +1,10 @@
-import { createContext, useContext, useMemo, useState, PropsWithChildren } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  PropsWithChildren,
+} from "react";
 
 export type TripType = "one" | "round" | "multi";
 
@@ -116,7 +122,8 @@ export function BookingProvider({ children }: PropsWithChildren) {
 
   const totalAmount = useMemo(() => {
     const out = state.selectedOutbound?.price || 0;
-    const ret = state.tripType === "round" ? state.selectedReturn?.price || 0 : 0;
+    const ret =
+      state.tripType === "round" ? state.selectedReturn?.price || 0 : 0;
     return out + ret;
   }, [state.selectedOutbound, state.selectedReturn, state.tripType]);
 

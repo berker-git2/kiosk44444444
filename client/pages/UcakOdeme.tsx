@@ -13,7 +13,11 @@ export default function UcakOdeme() {
   const orderId = `ORD-${Date.now()}`;
 
   function luhnCheck(num: string) {
-    const arr = num.replace(/\s+/g, "").split("").reverse().map((d) => parseInt(d, 10));
+    const arr = num
+      .replace(/\s+/g, "")
+      .split("")
+      .reverse()
+      .map((d) => parseInt(d, 10));
     let sum = 0;
     for (let i = 0; i < arr.length; i++) {
       let val = arr[i];
@@ -60,7 +64,8 @@ export default function UcakOdeme() {
 
             // After Card.js renders the preview, load a small jQuery tilt plugin to add 3D/tilt effects
             const tiltScript = document.createElement("script");
-            tiltScript.src = "https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js";
+            tiltScript.src =
+              "https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js";
             tiltScript.async = true;
             tiltScript.onload = () => {
               try {
@@ -82,8 +87,12 @@ export default function UcakOdeme() {
             document.body.appendChild(tiltScript);
 
             // Basic immediate visual validation: mark wrapper valid/invalid while typing card number
-            const numInput = document.getElementById("card-number") as HTMLInputElement | null;
-            const wrapper = document.querySelector(".card-wrapper") as HTMLElement | null;
+            const numInput = document.getElementById(
+              "card-number",
+            ) as HTMLInputElement | null;
+            const wrapper = document.querySelector(
+              ".card-wrapper",
+            ) as HTMLElement | null;
             if (numInput && wrapper) {
               const handler = () => {
                 const val = (numInput.value || "").replace(/\s+/g, "");
@@ -121,10 +130,18 @@ export default function UcakOdeme() {
     setError(null);
 
     // basic client-side validation (name, card number Luhn, expiry, cvc)
-    const nameEl = document.getElementById("card-name") as HTMLInputElement | null;
-    const numEl = document.getElementById("card-number") as HTMLInputElement | null;
-    const expEl = document.getElementById("card-expiry") as HTMLInputElement | null;
-    const cvcEl = document.getElementById("card-cvc") as HTMLInputElement | null;
+    const nameEl = document.getElementById(
+      "card-name",
+    ) as HTMLInputElement | null;
+    const numEl = document.getElementById(
+      "card-number",
+    ) as HTMLInputElement | null;
+    const expEl = document.getElementById(
+      "card-expiry",
+    ) as HTMLInputElement | null;
+    const cvcEl = document.getElementById(
+      "card-cvc",
+    ) as HTMLInputElement | null;
 
     const name = nameEl?.value || "";
     const numRaw = (numEl?.value || "").replace(/\s+/g, "");
@@ -198,7 +215,9 @@ export default function UcakOdeme() {
       form.submit();
     } catch (err: any) {
       // Fallback: simulate successful payment (useful when gateway not configured)
-      const code = ("" + Math.random().toString(36).toUpperCase().slice(2, 10)).replace(/[^A-Z0-9]/g, "0").slice(0, 8);
+      const code = ("" + Math.random().toString(36).toUpperCase().slice(2, 10))
+        .replace(/[^A-Z0-9]/g, "0")
+        .slice(0, 8);
       const reservation = {
         code,
         orderId,
@@ -233,35 +252,70 @@ export default function UcakOdeme() {
 
                   <form id="card-form" onSubmit={onPay} className="space-y-3">
                     <div>
-                      <label className="block text-xs text-slate-500 mb-1">Kart Üzerindeki İsim</label>
+                      <label className="block text-xs text-slate-500 mb-1">
+                        Kart Üzerindeki İsim
+                      </label>
                       <Input id="card-name" required placeholder="AD SOYAD" />
                     </div>
                     <div>
-                      <label className="block text-xs text-slate-500 mb-1">Kart Numarası</label>
-                      <Input id="card-number" required placeholder="5549 34.. .. .." inputMode="numeric" />
-                      <div id="card-number-error" className="text-xs text-red-600 mt-1 hidden">Geçersiz kart numarası</div>
+                      <label className="block text-xs text-slate-500 mb-1">
+                        Kart Numarası
+                      </label>
+                      <Input
+                        id="card-number"
+                        required
+                        placeholder="5549 34.. .. .."
+                        inputMode="numeric"
+                      />
+                      <div
+                        id="card-number-error"
+                        className="text-xs text-red-600 mt-1 hidden"
+                      >
+                        Geçersiz kart numarası
+                      </div>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs text-slate-500 mb-1">Son Kullanma (AA/YY)</label>
+                        <label className="block text-xs text-slate-500 mb-1">
+                          Son Kullanma (AA/YY)
+                        </label>
                         <Input id="card-expiry" required placeholder="MM/YY" />
                       </div>
                       <div>
-                        <label className="block text-xs text-slate-500 mb-1">CVC</label>
-                        <Input id="card-cvc" required placeholder="123" inputMode="numeric" />
+                        <label className="block text-xs text-slate-500 mb-1">
+                          CVC
+                        </label>
+                        <Input
+                          id="card-cvc"
+                          required
+                          placeholder="123"
+                          inputMode="numeric"
+                        />
                       </div>
                     </div>
 
-                    {error && <div className="text-sm text-red-600">{error}</div>}
-                    <Button type="submit" className="bg-brand text-white">Ödemeye Git</Button>
+                    {error && (
+                      <div className="text-sm text-red-600">{error}</div>
+                    )}
+                    <Button type="submit" className="bg-brand text-white">
+                      Ödemeye Git
+                    </Button>
                   </form>
                 </div>
 
                 {/* Right column reserved for a compact summary */}
                 <div className="hidden lg:block">
                   <div className="rounded-lg border p-3">
-                    <div className="text-sm text-slate-600">Kart bilgileri güvenli olarak iletilir.</div>
-                    <div className="mt-3 text-sm">Toplam: <b>{totalAmount} {state.selectedOutbound?.currency || 'EUR'}</b></div>
+                    <div className="text-sm text-slate-600">
+                      Kart bilgileri güvenli olarak iletilir.
+                    </div>
+                    <div className="mt-3 text-sm">
+                      Toplam:{" "}
+                      <b>
+                        {totalAmount}{" "}
+                        {state.selectedOutbound?.currency || "EUR"}
+                      </b>
+                    </div>
                   </div>
                 </div>
               </div>

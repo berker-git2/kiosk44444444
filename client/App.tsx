@@ -40,9 +40,15 @@ export default function App() {
                 <Route path="/yat-kiralama" element={<YatKiralama />} />
                 <Route path="/yat-kiralama/:id" element={<YatDetay />} />
                 <Route path="/ucak-bileti" element={<UcakBileti />} />
-                <Route path="/ucak-bileti/yolcu-bilgileri" element={<UcakYolcuBilgileri />} />
+                <Route
+                  path="/ucak-bileti/yolcu-bilgileri"
+                  element={<UcakYolcuBilgileri />}
+                />
                 <Route path="/ucak-bileti/odeme" element={<UcakOdeme />} />
-                <Route path="/ucak-bileti/rezervasyon" element={<UcakRezervasyon />} />
+                <Route
+                  path="/ucak-bileti/rezervasyon"
+                  element={<UcakRezervasyon />}
+                />
                 <Route path="/otobus-bileti" element={<Placeholder />} />
                 <Route path="/destek" element={<Placeholder />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

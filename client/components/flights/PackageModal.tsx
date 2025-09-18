@@ -1,15 +1,40 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
 export type PackageType = "ekonomi" | "standart" | "esnek";
 
 const PACKS: { key: PackageType; title: string; perks: string[] }[] = [
-  { key: "ekonomi", title: "Ekonomi", perks: ["Kabin bagajı", "Ücretsiz check-in"] },
-  { key: "standart", title: "Standart", perks: ["15kg bagaj", "Koltuk seçimi"] },
-  { key: "esnek", title: "Esnek", perks: ["Ücretsiz değişiklik", "30kg bagaj", "Öncelikli biniş"] },
+  {
+    key: "ekonomi",
+    title: "Ekonomi",
+    perks: ["Kabin bagajı", "Ücretsiz check-in"],
+  },
+  {
+    key: "standart",
+    title: "Standart",
+    perks: ["15kg bagaj", "Koltuk seçimi"],
+  },
+  {
+    key: "esnek",
+    title: "Esnek",
+    perks: ["Ücretsiz değişiklik", "30kg bagaj", "Öncelikli biniş"],
+  },
 ];
 
-export default function PackageModal({ open, onOpenChange, onSelect }: { open: boolean; onOpenChange: (v: boolean) => void; onSelect: (p: PackageType) => void }) {
+export default function PackageModal({
+  open,
+  onOpenChange,
+  onSelect,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  onSelect: (p: PackageType) => void;
+}) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -25,7 +50,12 @@ export default function PackageModal({ open, onOpenChange, onSelect }: { open: b
                   <li key={t}>• {t}</li>
                 ))}
               </ul>
-              <Button className="w-full bg-brand text-white" onClick={() => onSelect(p.key)}>Seç</Button>
+              <Button
+                className="w-full bg-brand text-white"
+                onClick={() => onSelect(p.key)}
+              >
+                Seç
+              </Button>
             </div>
           ))}
         </div>

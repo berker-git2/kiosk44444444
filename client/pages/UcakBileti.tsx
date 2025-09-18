@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import AirportCombobox from "@/components/flights/AirportCombobox";
 import PassengerSelector from "@/components/flights/PassengerSelector";
 import FlightCard, { type FlightOffer } from "@/components/flights/FlightCard";
-import FlightFilters, { type Filters } from "@/components/flights/FlightFilters";
+import FlightFilters, {
+  type Filters,
+} from "@/components/flights/FlightFilters";
 import PackageModal from "@/components/flights/PackageModal";
 import SummarySidebar from "@/components/flights/SummarySidebar";
 import { useToast } from "@/hooks/use-toast";
@@ -13,7 +15,8 @@ import { useNavigate } from "react-router-dom";
 
 function seededRandom(seed: string) {
   let h = 2166136261 >>> 0;
-  for (let i = 0; i < seed.length; i++) h = Math.imul(h ^ seed.charCodeAt(i), 16777619);
+  for (let i = 0; i < seed.length; i++)
+    h = Math.imul(h ^ seed.charCodeAt(i), 16777619);
   return () => {
     h += h << 13;
     h ^= h >>> 7;
@@ -26,7 +29,13 @@ function seededRandom(seed: string) {
 
 const AIRLINES = ["AJet", "Pegasus", "Turkish Airlines", "SunExpress"] as const;
 
-function generateFlights(from: string, to: string, date: string, paxTotal: number, nonstopOnly: boolean): FlightOffer[] {
+function generateFlights(
+  from: string,
+  to: string,
+  date: string,
+  paxTotal: number,
+  nonstopOnly: boolean,
+): FlightOffer[] {
   const rnd = seededRandom(`${from}|${to}|${date}`);
   const offers: FlightOffer[] = [];
   const baseTimes = ["05:45", "08:30", "10:15", "13:00", "16:20", "20:10"];
@@ -34,7 +43,12 @@ function generateFlights(from: string, to: string, date: string, paxTotal: numbe
   for (let i = 0; i < baseTimes.length; i++) {
     const dep = baseTimes[i];
     const durMins = 60 + Math.floor(rnd() * 120);
-    const hh = String(Math.floor((parseInt(dep.slice(0, 2)) * 60 + parseInt(dep.slice(3)) + durMins) / 60) % 24).padStart(2, "0");
+    const hh = String(
+      Math.floor(
+        (parseInt(dep.slice(0, 2)) * 60 + parseInt(dep.slice(3)) + durMins) /
+          60,
+      ) % 24,
+    ).padStart(2, "0");
     const mm = String((parseInt(dep.slice(3)) + durMins) % 60).padStart(2, "0");
     const arr = `${hh}:${mm}`;
     const airline = AIRLINES[Math.floor(rnd() * AIRLINES.length)];
@@ -80,7 +94,12 @@ export default function UcakBileti() {
   const [filters, setFilters] = useState<Filters>({
     nonstopOnly: false,
     time: "all",
-    airlines: { AJet: true, Pegasus: true, "Turkish Airlines": true, SunExpress: true },
+    airlines: {
+      AJet: true,
+      Pegasus: true,
+      "Turkish Airlines": true,
+      SunExpress: true,
+    },
   });
 
   const [packOpen, setPackOpen] = useState(false);
@@ -120,8 +139,21 @@ export default function UcakBileti() {
       toast({ title: err });
       return;
     }
-    setState({ tripType, from, to, departDate, returnDate, passengers, nonstopOnly });
-    const pax = passengers.adult + passengers.student + passengers.child + passengers.infant + passengers.senior;
+    setState({
+      tripType,
+      from,
+      to,
+      departDate,
+      returnDate,
+      passengers,
+      nonstopOnly,
+    });
+    const pax =
+      passengers.adult +
+      passengers.student +
+      passengers.child +
+      passengers.infant +
+      passengers.senior;
     const out = generateFlights(from, to, departDate, pax, nonstopOnly);
     setOutbound(out);
     if (tripType === "round" && returnDate) {
@@ -137,7 +169,11 @@ export default function UcakBileti() {
     if (leg === "out") setState({ selectedOutbound: { ...offer } });
     else setState({ selectedReturn: { ...offer } });
 
-    if (tripType === "one" || (tripType === "round" && (leg === "in" || (leg === "out" && state.selectedReturn)))) {
+    if (
+      tripType === "one" ||
+      (tripType === "round" &&
+        (leg === "in" || (leg === "out" && state.selectedReturn)))
+    ) {
       setPackOpen(true);
     }
   }
@@ -148,21 +184,29 @@ export default function UcakBileti() {
         <div className="flight-hero rounded-2xl overflow-hidden shadow-xl p-6 relative">
           <div className="flex items-center justify-between mb-4">
             <div className="logo-anim">
-              <div className="h-11 w-11 rounded-full bg-white/20 grid place-items-center text-white font-bold">✈️</div>
+              <div className="h-11 w-11 rounded-full bg-white/20 grid place-items-center text-white font-bold">
+                ✈️
+              </div>
               <div>
-                <div className="text-white text-lg font-extrabold">On Flight</div>
-                <div className="text-white/90 text-xs">En iyi uçuş seçenekleri</div>
+                <div className="text-white text-lg font-extrabold">
+                  On Flight
+                </div>
+                <div className="text-white/90 text-xs">
+                  En iyi uçuş seçenekleri
+                </div>
               </div>
             </div>
           </div>
 
           <div className="rounded-xl bg-white/90 dark:bg-white/5 p-4 -mt-2 relative z-30">
             <div className="flex gap-2 mb-3">
-              {([
-                { key: "one", label: "Tek Yön" },
-                { key: "round", label: "Gidiş - Dönüş" },
-                { key: "multi", label: "Çoklu Uçuş" },
-              ] as { key: TripType; label: string }[]).map((t) => (
+              {(
+                [
+                  { key: "one", label: "Tek Yön" },
+                  { key: "round", label: "Gidiş - Dönüş" },
+                  { key: "multi", label: "Çoklu Uçuş" },
+                ] as { key: TripType; label: string }[]
+              ).map((t) => (
                 <button
                   key={t.key}
                   onClick={() => setTripType(t.key)}
@@ -175,22 +219,57 @@ export default function UcakBileti() {
 
             <div className="flex flex-col md:flex-row gap-3 items-end">
               <div className="flex-1 grid grid-cols-1 md:grid-cols-5 gap-3">
-                <AirportCombobox label="Nereden" value={from} onChange={setFrom} />
+                <AirportCombobox
+                  label="Nereden"
+                  value={from}
+                  onChange={setFrom}
+                />
                 <AirportCombobox label="Nereye" value={to} onChange={setTo} />
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1">Gidiş Tarihi</label>
-                  <input type="date" className="w-full h-10 rounded-md border px-3" value={departDate} onChange={(e) => setDepartDate(e.target.value)} />
+                  <label className="block text-xs text-slate-500 mb-1">
+                    Gidiş Tarihi
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full h-10 rounded-md border px-3"
+                    value={departDate}
+                    onChange={(e) => setDepartDate(e.target.value)}
+                  />
                 </div>
                 <div>
-                  <label className="block text-xs text-slate-500 mb-1">Dönüş Tarihi</label>
-                  <input type="date" className="w-full h-10 rounded-md border px-3 disabled:opacity-50" value={returnDate} onChange={(e) => setReturnDate(e.target.value)} disabled={tripType !== "round"} />
+                  <label className="block text-xs text-slate-500 mb-1">
+                    Dönüş Tarihi
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full h-10 rounded-md border px-3 disabled:opacity-50"
+                    value={returnDate}
+                    onChange={(e) => setReturnDate(e.target.value)}
+                    disabled={tripType !== "round"}
+                  />
                 </div>
-                <PassengerSelector label="Yolcu Sayısı" value={passengers} onChange={setPassengers} />
+                <PassengerSelector
+                  label="Yolcu Sayısı"
+                  value={passengers}
+                  onChange={setPassengers}
+                />
               </div>
 
               <div className="flex items-center gap-3">
-                <label className="text-xs flex items-center gap-2"><input type="checkbox" checked={nonstopOnly} onChange={(e) => setNonstopOnly(e.target.checked)} /> Sadece aktarmasız uçuşlar</label>
-                <Button onClick={onSearch} className="bg-brand text-white ml-2 px-6 py-3">Ucuz Bilet Bul</Button>
+                <label className="text-xs flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={nonstopOnly}
+                    onChange={(e) => setNonstopOnly(e.target.checked)}
+                  />{" "}
+                  Sadece aktarmasız uçuşlar
+                </label>
+                <Button
+                  onClick={onSearch}
+                  className="bg-brand text-white ml-2 px-6 py-3"
+                >
+                  Ucuz Bilet Bul
+                </Button>
               </div>
             </div>
           </div>
@@ -206,14 +285,32 @@ export default function UcakBileti() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    <button className="p-2 rounded border" onClick={() => { if (!departDate) return; const d = new Date(departDate); d.setDate(d.getDate() - 1); setDepartDate(d.toISOString().slice(0, 10)); }}>
+                    <button
+                      className="p-2 rounded border"
+                      onClick={() => {
+                        if (!departDate) return;
+                        const d = new Date(departDate);
+                        d.setDate(d.getDate() - 1);
+                        setDepartDate(d.toISOString().slice(0, 10));
+                      }}
+                    >
                       <ChevronLeft />
                     </button>
                     <div className="text-sm font-semibold">{departDate}</div>
-                    <button className="p-2 rounded border" onClick={() => { if (!departDate) return; const d = new Date(departDate); d.setDate(d.getDate() + 1); setDepartDate(d.toISOString().slice(0, 10)); }}>
+                    <button
+                      className="p-2 rounded border"
+                      onClick={() => {
+                        if (!departDate) return;
+                        const d = new Date(departDate);
+                        d.setDate(d.getDate() + 1);
+                        setDepartDate(d.toISOString().slice(0, 10));
+                      }}
+                    >
                       <ChevronRight />
                     </button>
-                    <div className="ml-4 text-xs text-slate-500">Günlük tahmini fiyatlar</div>
+                    <div className="ml-4 text-xs text-slate-500">
+                      Günlük tahmini fiyatlar
+                    </div>
                   </div>
                 </div>
 
@@ -223,7 +320,11 @@ export default function UcakBileti() {
                       <div className="font-semibold mb-2">Gidiş</div>
                       <div className="grid gap-3">
                         {filteredOutbound.map((o) => (
-                          <FlightCard key={`${o.flightId}-${o.seller}-${o.price}`} offer={o} onSelect={(sel) => onSelectOffer(sel, "out")} />
+                          <FlightCard
+                            key={`${o.flightId}-${o.seller}-${o.price}`}
+                            offer={o}
+                            onSelect={(sel) => onSelectOffer(sel, "out")}
+                          />
                         ))}
                       </div>
                     </div>
@@ -231,7 +332,11 @@ export default function UcakBileti() {
                       <div className="font-semibold mb-2">Dönüş</div>
                       <div className="grid gap-3">
                         {filteredInbound.map((o) => (
-                          <FlightCard key={`${o.flightId}-${o.seller}-${o.price}`} offer={o} onSelect={(sel) => onSelectOffer(sel, "in")} />
+                          <FlightCard
+                            key={`${o.flightId}-${o.seller}-${o.price}`}
+                            offer={o}
+                            onSelect={(sel) => onSelectOffer(sel, "in")}
+                          />
                         ))}
                       </div>
                     </div>
@@ -239,7 +344,11 @@ export default function UcakBileti() {
                 ) : (
                   <div className="grid gap-3">
                     {filteredOutbound.map((o) => (
-                      <FlightCard key={`${o.flightId}-${o.seller}-${o.price}`} offer={o} onSelect={(sel) => onSelectOffer(sel, "out")} />
+                      <FlightCard
+                        key={`${o.flightId}-${o.seller}-${o.price}`}
+                        offer={o}
+                        onSelect={(sel) => onSelectOffer(sel, "out")}
+                      />
                     ))}
                   </div>
                 )}
@@ -252,7 +361,10 @@ export default function UcakBileti() {
       <PackageModal
         open={packOpen}
         onOpenChange={setPackOpen}
-        onSelect={(p) => { setState({ selectedPackage: p }); navigate("/ucak-bileti/yolcu-bilgileri"); }}
+        onSelect={(p) => {
+          setState({ selectedPackage: p });
+          navigate("/ucak-bileti/yolcu-bilgileri");
+        }}
       />
     </section>
   );
