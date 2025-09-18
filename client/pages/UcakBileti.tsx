@@ -85,13 +85,27 @@ export default function UcakBileti() {
 
   const [packOpen, setPackOpen] = useState(false);
 
-  const filteredOutbound = useMemo(() =>
-    outbound.filter((o) => filters.airlines[o.seller] && (filters.time === "all" || (filters.time === "early" ? Number(o.depart.split(":"[0]))
-        : filters.time === "mid" ? Number(o.depart.split(":"[0]))
-        : Number(o.depart.split(":"[0])))), [outbound, filters])
-  , [outbound, filters]);
+  const filteredOutbound = useMemo(() => {
+    return outbound.filter((o) => {
+      if (!filters.airlines[o.seller]) return false;
+      if (filters.time === "all") return true;
+      const hour = Number(o.depart.split(":")[0]);
+      if (filters.time === "early") return hour >= 0 && hour < 6;
+      if (filters.time === "mid") return hour >= 6 && hour < 12;
+      return hour >= 12;
+    });
+  }, [outbound, filters]);
 
-  const filteredInbound = useMemo(() => inbound.filter((o) => filters.airlines[o.seller]), [inbound, filters]);
+  const filteredInbound = useMemo(() => {
+    return inbound.filter((o) => {
+      if (!filters.airlines[o.seller]) return false;
+      if (filters.time === "all") return true;
+      const hour = Number(o.depart.split(":")[0]);
+      if (filters.time === "early") return hour >= 0 && hour < 6;
+      if (filters.time === "mid") return hour >= 6 && hour < 12;
+      return hour >= 12;
+    });
+  }, [inbound, filters]);
 
   function validate() {
     if (!from || !to) return "Lütfen kalkış ve varış seçin";
@@ -134,7 +148,7 @@ export default function UcakBileti() {
         <div className="flight-hero rounded-2xl overflow-hidden shadow-xl p-6 relative">
           <div className="flex items-center justify-between mb-4">
             <div className="logo-anim">
-              <div className="h-11 w-11 rounded-full bg-white/20 grid place-items-center text-white font-bold">���️</div>
+              <div className="h-11 w-11 rounded-full bg-white/20 grid place-items-center text-white font-bold">✈️</div>
               <div>
                 <div className="text-white text-lg font-extrabold">On Flight</div>
                 <div className="text-white/90 text-xs">En iyi uçuş seçenekleri</div>
