@@ -106,18 +106,27 @@ export default function UcakOdeme() {
         $("#cc-preview-cvc").text((this.value as string) || "•••");
       });
 
-      // tilt on mouse move inside preview
-      $(document).on("mousemove", "#card-preview", function (e: any) {
-        const rect = (this as HTMLElement).getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        const rx = (-y / rect.height) * 10; // rotateX
-        const ry = (x / rect.width) * 12; // rotateY
-        $("#card-inner").css("transform", `rotateX(${rx}deg) rotateY(${ry}deg)`);
-      });
-      $(document).on("mouseleave", "#card-preview", function () {
-        $("#card-inner").css("transform", "rotateX(0deg) rotateY(0deg)");
-      });
+      // Load tilt.js (jQuery plugin) for nicer 3D effect
+      const tiltScript = document.createElement("script");
+      tiltScript.src = "https://cdnjs.cloudflare.com/ajax/libs/tilt.js/1.2.1/tilt.jquery.min.js";
+      tiltScript.async = true;
+      tiltScript.onload = () => {
+        try {
+          // initialize with glare and max tilt
+          ($ as any)("#card-preview").tilt({
+            maxTilt: 15,
+            perspective: 1000,
+            glare: true,
+            maxGlare: 0.35,
+            scale: 1.02,
+            speed: 400,
+            easing: "cubic-bezier(.03,.98,.52,.99)",
+          });
+        } catch (e) {
+          // ignore
+        }
+      };
+      document.body.appendChild(tiltScript);
     };
     document.body.appendChild(script);
     return () => {
